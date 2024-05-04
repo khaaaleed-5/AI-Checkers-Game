@@ -1,3 +1,3 @@
 # AI-Checkers-Game
 
-![logo]('./image.png')
+![Project Logo](./image.png)
