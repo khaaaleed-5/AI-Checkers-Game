@@ -4,10 +4,6 @@ from checkers.game import Game
 
 FPS = 60
 
-
-
-
-
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Checkers')
 
