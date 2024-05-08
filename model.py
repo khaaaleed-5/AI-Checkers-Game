@@ -1,15 +1,58 @@
 import keras
+import numpy as np
 
 
-def build_model():
-    input_layer = keras.layers.Input(shape=((8,8)),name='input_layer')
-    flatten_layer = keras.layers.Flatten()(input_layer)
-    hid_layer1 = keras.layers.Dense(128,activation='relu')(flatten_layer)
-    hid_layer2 = keras.layers.Dense(64,activation='relu')(hid_layer1)
-    output_layer = keras.layers.Dense(4,activation='softmax')(hid_layer2)
-    model = keras.models.Model(inputs=input_layer,outputs=output_layer)
+
+class NeuralNetwork:
+    def __init__(self,output=4):
+        self.model = None
+        self.output = output
+        input_layer = keras.layers.Input(shape=(8,8))
+        flatten_layer = keras.layers.Flatten()(input_layer)
+        hid_layer1 = keras.layers.Dense(128,activation='relu')(flatten_layer)
+        hid_layer2 = keras.layers.Dense(64,activation='relu')(hid_layer1)
+        output_layer = keras.layers.Dense(self.output,activation='softmax')(hid_layer2)
+        self.model = keras.models.Model(inputs=input_layer,outputs=output_layer)
+            
+    def forward_pass(self,X_test:np.ndarray):
+        ''''
+            it takes the X_test which is 2d matrix(Board)
+            model predict the given data and return the prediction
+        '''
+        y_pred = self.model.predict(X_test)
+        y_pred = np.ceil(y_pred)
+        return y_pred
     
-    return model
+    #get the weights of the model after prediction to optimize it
+    def get_weights(model:keras.Model):
+        weights = model.get_weights()
+        return weights
 
 
-model = build_model()
+#testing
+
+array = [[
+    #first initaliztion
+    [0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [0, 1, 0, 1, 0, 1, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [2, 0, 2, 0, 2, 0, 2, 0],
+    [0, 2, 0, 2, 0, 2, 0, 2],
+    [2, 0, 2, 0, 2, 0, 2, 0]
+    #0 for empty cell
+    #1 for player 1
+    #2 for player 2
+    #3 for player 1 that is king
+    #4 for player 2 that is king
+]]
+
+array = np.array(array)
+
+#how to make instance and model from it
+nn = NeuralNetwork()
+pred = nn.forward_pass(array)
+print(pred)
+# weights = model.get_weights()
+# print(weights)
