@@ -28,6 +28,14 @@ class NeuralNetwork:
         weights = model.get_weights()
         return weights
 
+    #save model weights to h5 file
+    def save_weights(self,path:str):
+        self.model.save_weights(f'{path}.h5')
+    
+    #laod weights from h5 file
+    def load_weights(self,path:str):
+        self.model.load_weights(f'{path}.h5')
+
 
 #testing
 
