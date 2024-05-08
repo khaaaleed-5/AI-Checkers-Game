@@ -24,8 +24,8 @@ class NeuralNetwork:
         return y_pred
     
     #get the weights of the model after prediction to optimize it
-    def get_weights(model:keras.Model):
-        weights = model.get_weights()
+    def get_weights(self):
+        weights = self.model.get_weights()
         return weights
 
     #save model weights to h5 file
@@ -38,7 +38,6 @@ class NeuralNetwork:
 
 
 #testing
-
 array = [[
     #first initaliztion
     [0, 1, 0, 1, 0, 1, 0, 1],
