@@ -15,13 +15,14 @@ class NeuralNetwork:
         self.model = keras.models.Model(inputs=input_layer,outputs=output_layer)
         
             
-    def forward_pass(self,X_test:np.ndarray):
+    def forward_pass(self,X_test):
         ''''
-            it takes the X_test which is 2d matrix(Board)
+            it takes the X_test which is 2d matrix(Board) and changes it to numpy array,
             model predict the given data and return the prediction
         '''
+        X_test = np.array(X_test)
         y_pred = self.model.predict(X_test)
-        # y_pred = np.ceil(y_pred)
+        y_pred = np.ceil(y_pred)
         return y_pred
     
     #get the weights of the model after prediction to optimize it
@@ -56,7 +57,7 @@ array = [[
     #4 for player 2 that is king
 ]]
 
-array = np.array(array)
+# array = np.array(array)
 weights = np.random.rand(8,16)
 
 #how to make instance and model from it

@@ -68,6 +68,32 @@ class Board:
         
         return None 
     
+    def get_board_matrix(self):
+        """
+        Returns the current state of the board as a matrix.
+        0: Empty square
+        1: Player 1's piece
+        2: Player 2's piece
+        3: Player 1's king piece
+        4: Player 2's king piece
+        """
+        matrix = [[0 for _ in range(COLS)] for _ in range(ROWS)]
+        for row in range(ROWS):
+            for col in range(COLS):
+                piece = self.board[row][col]
+                if piece != 0:
+                    if piece.color == RED:
+                        if piece.king:
+                            matrix[row][col] = 3  # Player 1's king piece
+                        else:
+                            matrix[row][col] = 1  # Player 1's piece
+                    else:
+                        if piece.king:
+                            matrix[row][col] = 4  # Player 2's king piece
+                        else:
+                            matrix[row][col] = 2  # Player 2's piece
+        return matrix
+    
     def get_valid_moves(self, piece):
         moves = {}
         left = piece.col - 1

@@ -1,6 +1,6 @@
 import pygame
 from checkers.constants import WIDTH, HEIGHT, SQUARE_SIZE, RED
-from checkers.game import Game
+from game import Game
 
 FPS = 60
 
@@ -17,7 +17,9 @@ def main():
     run = True
     clock = pygame.time.Clock()
     game = Game(WIN)
-
+    # test get_matrix function that return the matrix of the board during playing
+    # matrix = game.get_board_matrix()
+    # print(matrix)
     while run:
         clock.tick(FPS)
 
