@@ -13,6 +13,7 @@ class NeuralNetwork:
         hid_layer2 = keras.layers.Dense(64,activation='relu')(hid_layer1)
         output_layer = keras.layers.Dense(self.output,activation='softmax')(hid_layer2)
         self.model = keras.models.Model(inputs=input_layer,outputs=output_layer)
+        
             
     def forward_pass(self,X_test:np.ndarray):
         ''''
@@ -20,14 +21,14 @@ class NeuralNetwork:
             model predict the given data and return the prediction
         '''
         y_pred = self.model.predict(X_test)
-        y_pred = np.ceil(y_pred)
+        # y_pred = np.ceil(y_pred)
         return y_pred
     
     #get the weights of the model after prediction to optimize it
     def get_weights(self):
         weights = self.model.get_weights()
         return weights
-
+    
     #save model weights to h5 file
     def save_weights(self,path:str):
         self.model.save_weights(f'{path}.h5')
@@ -56,10 +57,12 @@ array = [[
 ]]
 
 array = np.array(array)
+weights = np.random.rand(8,16)
 
 #how to make instance and model from it
 nn = NeuralNetwork()
 pred = nn.forward_pass(array)
+weights = nn.get_weights()
 print(pred)
 # weights = model.get_weights()
 # print(weights)
