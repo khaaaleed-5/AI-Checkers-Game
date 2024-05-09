@@ -5,6 +5,8 @@ ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH//COLS
 
 # rgb
+OFFWhite = (242, 243, 244)
+LIGHTGREEN = (5,102,79)
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
