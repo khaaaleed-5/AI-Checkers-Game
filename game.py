@@ -74,7 +74,6 @@ class Game:
             self.change_turn()
         else:
             return False
-
         return True
 
     def draw_valid_moves(self, moves):
@@ -126,7 +125,7 @@ class Game:
                 action = self.model.forward_pass(input_board)  # Use the method to get the board matrix
                 
                 # Execute the action (e.g., select and move a piece)
-                self.execute_move(action)
+                move = self.execute_move(action)
                 
                 #get the score 
                 score = self.get_score()
