@@ -1,6 +1,7 @@
 import pygame
-from checkers.constants import WIDTH, HEIGHT, SQUARE_SIZE, RED
+from checkers.constants import WIDTH, HEIGHT, SQUARE_SIZE, RED,WHITE
 from game import Game
+from minimax import minimax
 
 FPS = 60
 
@@ -17,12 +18,17 @@ def main():
     run = True
     clock = pygame.time.Clock()
     game = Game(WIN)
+    game
     # test get_matrix function that return the matrix of the board during playing
     # matrix = game.get_board_matrix()
     # print(matrix)
     while run:
         clock.tick(FPS)
 
+        if game.turn == WHITE:
+            value, new_board = minimax(game.get_board(), 4, WHITE, game)
+            game.minimax_move(new_board)
+            
         if game.winner() != None:
             print(game.winner())
             run = False

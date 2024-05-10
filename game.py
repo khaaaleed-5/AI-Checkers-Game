@@ -2,6 +2,8 @@ import numpy as np
 import pygame
 from checkers.constants import RED, WHITE, BLUE, SQUARE_SIZE
 from checkers.board import Board
+from minimax import minimax
+from checkers.piece import Piece
 from model import NeuralNetwork
 
 class Game:
@@ -18,12 +20,15 @@ class Game:
     def _init(self):
         self.selected = None
         self.board = Board()
+        self.piece = Piece()
         self.turn = RED
         self.valid_moves = {}
 
     def winner(self):
         return self.board.winner()
     
+    def get_board(self):
+        return self.board
     
     def get_board_matrix(self):
         """
@@ -62,6 +67,7 @@ class Game:
             return False
 
         return True
+    
     #for genetic
     def execute_move(self,action):
         row,col,new_row,new_col = action[0][:4]
@@ -87,6 +93,10 @@ class Game:
             self.turn = WHITE
         else:
             self.turn = RED
+    
+    def minimax_move(self,board):
+        self.board = board
+        self.change_turn()
     
     def get_score(self):
         board = self.get_board_matrix()
@@ -116,29 +126,46 @@ class Game:
         return boards
 
     def evaluate_population(self, population: list):
-        boards = self.init_board(population)
-        # flag = True
-        # while flag:
-        for i,board in enumerate(boards):
-            input_board = board['x']
-            # Perform a forward pass of the model to get the action
-            action = self.model.forward_pass(input_board)  # Use the method to get the board matrix
-            
-            # Execute the action (e.g., select and move a piece)
-            move = self.execute_move(action)
-            
-            #get the score 
-            score = self.get_score()
-            winner = self.winner()
-            if winner != None:
-                board['fitness'] += 24  #max score because there's
-                boards -= 1
+        '''
+        fitness for model is divided:
+           1. - 1 for piece   ->after game
+           2. - 1 if killed white piece (12 - pieces) ->after game
+           3. - 2 for king    ->during game
+           4.- -1 if predicted illegal move ->during game
+           5.- 50 if model won (not now)  ->during game
+           
+        '''
+        while True:
 
-            #when the fitness is low number this indicates that the fitness is high due to low number of pieces on the board
-            board['fitness'] += np.abs(score)
+            fitness_scores = []
+            for elm in population:
+                while True:
+                    '''
+                    break if:
+                        - 
+                    '''
+                    #minimax
+                    if self.turn == WHITE:
+                        _, new_board = minimax(self.get_board(), 4, WHITE, self)
+                        self.minimax_move(new_board)
+                    
+                    #model
+                    else:
+                        pred = ...   #model prediction
+                        x = np.argmax(pred)
+                        index_number = x%4
+                        index_list = x // len(pred)
+                        if not self.piece.king and index_number > 2:
+                            fitness_scores.append(-1)
+                            break
+                        elif
 
-        # if boards == 0:
-        #     flag = False
-        fitness_scores = np.array([board['fitness'] for board in boards])
-                
-        return fitness_scores
+                    
+                    board = self.get_board()
+                    for row in board:
+                        for piece in row:
+
+
+                fitness_scores = np.array([board['fitness'] for board in boards])
+                    
+            return fitness_scores
