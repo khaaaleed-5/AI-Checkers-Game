@@ -117,28 +117,28 @@ class Game:
 
     def evaluate_population(self, population: list):
         boards = self.init_board(population)
-        flag = True
-        while flag:
-            for i,board in enumerate(boards):
-                input_board = board['x']
-                # Perform a forward pass of the model to get the action
-                action = self.model.forward_pass(input_board)  # Use the method to get the board matrix
-                
-                # Execute the action (e.g., select and move a piece)
-                move = self.execute_move(action)
-                
-                #get the score 
-                score = self.get_score()
-                winner = self.winner()
-                if winner != None:
-                    board['fitness'] += 24  #max score because there's
-                    boards -= 1
+        # flag = True
+        # while flag:
+        for i,board in enumerate(boards):
+            input_board = board['x']
+            # Perform a forward pass of the model to get the action
+            action = self.model.forward_pass(input_board)  # Use the method to get the board matrix
+            
+            # Execute the action (e.g., select and move a piece)
+            move = self.execute_move(action)
+            
+            #get the score 
+            score = self.get_score()
+            winner = self.winner()
+            if winner != None:
+                board['fitness'] += 24  #max score because there's
+                boards -= 1
 
-                #when the fitness is low number this indicates that the fitness is high due to low number of pieces on the board
-                board['fitness'] += np.abs(score)
-                
-        if boards == 0:
-            flag = False
+            #when the fitness is low number this indicates that the fitness is high due to low number of pieces on the board
+            board['fitness'] += np.abs(score)
+
+        # if boards == 0:
+        #     flag = False
         fitness_scores = np.array([board['fitness'] for board in boards])
                 
         return fitness_scores
