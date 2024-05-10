@@ -129,9 +129,16 @@ class Game:
                 
                 #get the score 
                 score = self.get_score()
-                #when the fitness is low number this indicates that the board
+                winner = self.winner()
+                if winner != None:
+                    board['fitness'] += 24  #max score because there's
+                    boards -= 1
+
+                #when the fitness is low number this indicates that the fitness is high due to low number of pieces on the board
                 board['fitness'] += np.abs(score)
-        
+                
+        if boards == 0:
+            flag = False
         fitness_scores = np.array([board['fitness'] for board in boards])
                 
         return fitness_scores
