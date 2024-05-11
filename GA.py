@@ -71,6 +71,15 @@ class GeneticAlgorithm:
             c2.weights[i] = mask * c2.weights[i] + (1 - mask) * c1.weights[i]
         return c1, c2
 
+    def single_point_crossover(parent1, parent2):
+        if len(parent1) > 1 and len(parent2) > 1:  
+            crossover_point = random.randint(1, min(len(parent1), len(parent2)) - 1)
+            child1 = parent1[:crossover_point] + parent2[crossover_point:]
+            child2 = parent2[:crossover_point] + parent1[crossover_point:]
+            return child1, child2
+        else:
+            return parent1, parent2
+        
     def self_adaptive_mutation(self, nn: NN, fitness_scores, mutation_rate_factor=1.1, mutation_rate_decay=0.9):
         mean_fitness = np.mean(fitness_scores)
         
