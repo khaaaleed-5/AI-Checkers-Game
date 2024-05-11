@@ -1,6 +1,6 @@
 import numpy as np
 from game import Game
-from model import NeuralNetwork as NN
+from model import Player as NN
 import random
 
 class GeneticAlgorithm:
@@ -22,7 +22,7 @@ class GeneticAlgorithm:
         '''
         Initialize population of specified size.
         '''
-        pop = [self.nn() for _ in range(self.population_size)]
+        pop = [NN() for _ in range(self.population_size)]
         return pop
     
     def tournament_selection(self,fitness_scores: np.ndarray, pop: list[NN]):
@@ -121,12 +121,12 @@ class GeneticAlgorithm:
             np.random.seed(self.random_seed)
 
         pop = self.__init_population()
-
         self.best_scores = []
         self.best_nn = (None, -1) # (best neural network, best score)
         for epoch in range(epochs):
             # Evaluate
             fitness_scores = self.game.evaluate_population(pop)
+            print(fitness_scores)
             
             # Select parents
             if self.selection_type == 'uniform':
@@ -154,7 +154,6 @@ class GeneticAlgorithm:
                 mutated_children.append(child)
 
             # Replace
-          
             pop = self.fitness_based_replacement(pop,fitness_scores,mutated_children)
 
             # Update best neural network

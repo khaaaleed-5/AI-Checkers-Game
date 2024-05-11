@@ -3,7 +3,6 @@ import pygame
 from checkers.constants import RED, WHITE, BLUE, SQUARE_SIZE,WIDTH,HEIGHT
 from checkers.board import Board
 from minimax import minimax
-from checkers.piece import Piece
 from model import Player
 
 class Game:
@@ -30,9 +29,11 @@ class Game:
         piece = 1
         map = {}
         for i in range(len(board), -1, -1):
+            i-=1
             for j in range(len(board[i])):
                 if board[i][j] in [2, 4]:
-                    map[piece] = (i, j)
+                    print(board[i][j], i, j)
+                    map[piece] = (len(board) - i, j)
                     piece += 1
         return map
     
@@ -150,12 +151,12 @@ class Game:
 
     def evaluate_population(self, population: list[Player]):
         '''
-        fitness for model is divided:
-            1. - 1 for piece   ->after game
-            2. - 1 if killed white piece (12 - pieces) ->after game
-            3. - 2 for king    ->after game
-            4.- -1 if predicted illegal move ->during game
-            5.- 50 if model won (not now)  ->during game
+        fitness rules:
+            1. - 1 for piece   -> Evaluated after game
+            2. - 1 if killed white piece (12 - pieces) -> Evaluated after game
+            3. - 2 for king    -> Evaluated after game
+            4.- -1 if predicted illegal move -> Evaluated during game
+            5.- 50 if model won (not now)  -> Evaluated during game
         '''
         running = True
         clock = pygame.time.Clock()
@@ -168,17 +169,22 @@ class Game:
                 if event.type == pygame.QUIT:
                     running = False
             fitness_scores = []
+            turn = RED
             for player in population:
                 while True: # Play the game
-                    if self.turn == WHITE: # Minimax's turn
+                    print('turn:', turn)
+                    if turn == WHITE: # Minimax's turn
                         _, new_board = minimax(self.get_board(), 4, WHITE, self)
                         self.minimax_move(new_board)
+                        print('Mnimax move')
 
                     else: # Model's turn
-                        pred = player.forward(self.get_board())
+                        print('Model move')
+                        flat_board = np.array(self.get_board_matrix()).flatten()
+                        pred = player.forward(flat_board).detach().numpy()
                         x = np.argmax(pred)
                         move_id = x % 4
-                        piece_id = x // len(pred)
+                        piece_id = x // len(pred) + 1
 
                         # get the piece row and col
                         row, col = self.get_piece_row_col(piece_id)
@@ -188,24 +194,35 @@ class Game:
                         piece = self.board.get_piece(row, col)
                         if not piece.king and move_id > 2:
                             fitness_scores.append(-1)
+                            print('illegal move')
                             break
-
+                            
                         # Check if move is invalid
-                        if self.board.get_valid_moves(piece) == {}: # No valid moves
-                            fitness_scores.append(-1)
-                            break
-
+                        # if self.board.get_valid_moves(piece) == {}: # No valid moves
+                        #     fitness_scores.append(-1)
+                        #     print('illegal move2')
+                        #     break
+                        print('executing move')
                         # Execute the move
                         self.execute_move(row, col, new_row, new_col)
-                    
+                        print('move executed')
+
                     # Check if the game is over
                     if self.winner() != None:
                         if self.winner() == RED:
                             fitness_scores.append(50)
                         break
 
+                    # Change the turn
+                    if turn == RED:
+                        turn = WHITE
+                    else:
+                        turn = RED
+
                     # Update the board
                     self.update()
+                    print(turn)
+
                 
                 # Calculate the fitness score
                 model_score = 0

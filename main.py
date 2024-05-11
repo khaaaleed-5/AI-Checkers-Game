@@ -3,6 +3,8 @@ from GA import GeneticAlgorithm
 from model import Player
 import tkinter as tk
 from tkinter import ttk
+import pygame
+from checkers.constants import WIDTH, HEIGHT
 
 class MutationPage(tk.Tk):
     def __init__(self):
@@ -43,7 +45,8 @@ class MutationPage(tk.Tk):
         print("Mutation Type:", mutation_type)
         print("Mutation Rate:", mutation_rate)
         print("Crossover Type:", crossover_type)
-        game = Game()
+        WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+        game = Game(WIN)
         genetic_algorithm = GeneticAlgorithm(population_size=50,
                                              mutation_rate=mutation_rate,
                                              nn=Player,

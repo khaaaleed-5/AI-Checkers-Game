@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 
 class Player(nn.Module):
     def __init__(self, rows=8, gpu=False):
@@ -36,15 +37,16 @@ class Player(nn.Module):
         self.device = torch.device("cuda" if gpu and torch.cuda.is_available() else "cpu")
         self.to(self.device)
 
-    def __init_weights(self):
-        for m in self.modules():
-            if isinstance(m, nn.Linear):
-                nn.init.kaiming_uniform_(m.weight, nonlinearity='relu')
-                m.bias.data.fill_(0.001)
+    # def __init_weights(self):
+        # initialize weights randomly for each call to the constructor
+        # for layer in self.MLP:
+        #     if isinstance(layer, nn.Linear):
+        #         nn.init.random_uniform_(layer.weight, -0.1, 0.1)
+        #         nn.init.zeros_(layer.bias)
+        
 
-    def forward(self, x):
-        # Flatten the input
-        x = x.view(x.size(0), -1)
+    def forward(self, x: np.ndarray):
+        x = torch.tensor(x, dtype=torch.float32).to(self.device)
 
         # Forward pass
         x = self.MLP(x)
@@ -53,14 +55,15 @@ class Player(nn.Module):
         x = self.output(x)
 
         # Softmax activation
-        o = F.softmax(x, dim=1)
-
+        o = F.softmax(x, dim=0)
+        
         # Reshape the output
-        o = o.view(x.size(0), -1, 4)
+        o = o.view(x.size(0)//4, -1, 4)
 
         return o
-
-
+    
+    def get_weights(self):
+        return [param.data.cpu().numpy() for param in self.parameters()]
 
 """
 [[0.0002, 0.0003, 0.0004, 0.0005],
