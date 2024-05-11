@@ -15,7 +15,6 @@ class Game:
     def _init(self):
         self.selected = None
         self.board = Board()
-        # self.piece = Piece()
         self.turn = RED
         self.valid_moves = {}
         self.piece_map = self.map_pieces()
@@ -183,12 +182,13 @@ class Game:
                         new_row, new_col = self.get_new_row_col(row, col, move_id)
 
                         # Check if the move is invalid
-                        if not self.piece.king and move_id > 2:
+                        piece = self.board.get_piece(row, col)
+                        if not piece.king and move_id > 2:
                             fitness_scores.append(-1)
                             break
 
                         # Check if move is invalid
-                        if self.board.get_valid_moves({'row': row, 'col': col}) == {}: # No valid moves
+                        if self.board.get_valid_moves(piece) == {}: # No valid moves
                             fitness_scores.append(-1)
                             break
 
@@ -206,18 +206,19 @@ class Game:
                 
                 # Calculate the fitness score
                 model_score = 0
-                for row in self.board:
+                for row in self.board.board:
                     for piece in row:
-                        if piece == RED:
-                            if piece.king:
-                                model_score += 2
-                            else:
-                                model_score += 1
-                        elif piece == WHITE:
-                            if piece.king:
-                                model_score -= 2
-                            else:
-                                model_score -= 1
+                        if piece != 0:
+                            if piece.color == RED:
+                                if piece.king:
+                                    model_score += 2
+                                else:
+                                    model_score += 1
+                            elif piece.color == WHITE:
+                                if piece.king:
+                                    model_score -= 2
+                                else:
+                                    model_score -= 1
 
                 fitness_scores.append(model_score)
 
