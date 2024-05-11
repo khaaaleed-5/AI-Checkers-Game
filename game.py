@@ -1,6 +1,6 @@
 import numpy as np
 import pygame
-from checkers.constants import RED, WHITE, BLUE, SQUARE_SIZE
+from checkers.constants import RED, WHITE, BLUE, SQUARE_SIZE,WIDTH,HEIGHT
 from checkers.board import Board
 from minimax import minimax
 from checkers.piece import Piece
@@ -159,6 +159,9 @@ class Game:
         '''
         running = True
         clock = pygame.time.Clock()
+        WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.display.set_caption('Checkers')
+
         while running:
             clock.tick(60)
             for event in pygame.event.get():
