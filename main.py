@@ -18,10 +18,6 @@ def main():
     run = True
     clock = pygame.time.Clock()
     game = Game(WIN)
-    game
-    # test get_matrix function that return the matrix of the board during playing
-    # matrix = game.get_board_matrix()
-    # print(matrix)
     while run:
         clock.tick(FPS)
 
